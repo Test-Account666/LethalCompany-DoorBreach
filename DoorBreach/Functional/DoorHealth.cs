@@ -117,7 +117,7 @@ public class DoorHealth : NetworkBehaviour {
 
         if (actionSource == ActionSource.Source.PLAYER) player = StartOfRound.Instance.allPlayerScripts[playerWhoTriggered];
 
-        EventHandler.OnDoorBreach(actionSource.Value, _doorLock, player);
+        EventHandler.OnDoorBreach(actionSource.Value, _doorLock, player, DoorBreachConfig.doorBreachMode);
 
         _broken = true;
 

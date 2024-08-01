@@ -29,13 +29,19 @@ public static class EventHandler {
     public static DoorBreachEvent? doorBreach;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    internal static void OnDoorBreach(ActionSource.Source actionSource, DoorLock doorLock, PlayerControllerB? playerControllerB) {
-        doorBreach?.Invoke(new(actionSource, doorLock, playerControllerB));
+    internal static void OnDoorBreach(ActionSource.Source actionSource, DoorLock doorLock, PlayerControllerB? playerControllerB,
+                                      DoorBreachConfig.DoorBreachMode doorBreachMode) {
+        doorBreach?.Invoke(new(actionSource, doorLock, playerControllerB, doorBreachMode));
     }
 
-    public class DoorBreachEventArguments(ActionSource.Source actionSource, DoorLock doorLock, PlayerControllerB? playerControllerB) : EventArgs {
+    public class DoorBreachEventArguments(
+        ActionSource.Source actionSource,
+        DoorLock doorLock,
+        PlayerControllerB? playerControllerB,
+        DoorBreachConfig.DoorBreachMode doorBreachMode) : EventArgs {
         public readonly ActionSource.Source actionSource = actionSource;
         public readonly DoorLock doorLock = doorLock;
         public readonly PlayerControllerB? playerControllerB = playerControllerB;
+        public readonly DoorBreachConfig.DoorBreachMode doorBreachMode = doorBreachMode;
     }
 }
