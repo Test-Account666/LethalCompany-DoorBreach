@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.2.0
+
+\+ Added [Moonswept](https://thunderstore.io/c/lethal-company/p/MoonsweptTeam/Moonswept/) support<br>
+
 ## 1.1.0
 
 \+ Fixed issues with MalfunctionalDoors<br>
