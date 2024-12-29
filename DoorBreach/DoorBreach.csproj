@@ -5,7 +5,7 @@
         <AssemblyName>TestAccount666.DoorBreach</AssemblyName>
         <Product>DoorBreach</Product>
         <!-- Change to whatever version you're currently on. -->
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <Description>Open doors with style</Description>
         <Source>https://github.com/Test-Account666/LethalCompany-DoorBreach/</Source>
     </PropertyGroup>
@@ -71,6 +71,9 @@
     <ItemGroup>
       <Reference Include="com.github.zehsteam.ToilHead">
         <HintPath>..\include\ToilHead.dll</HintPath>
+      </Reference>
+      <Reference Include="MoonsweptTeam.Moonswept">
+        <HintPath>..\include\Moonswept.dll</HintPath>
       </Reference>
       <Reference Include="PiggyVarietyMod">
         <HintPath>..\include\PiggyVarietyMod.dll</HintPath>
