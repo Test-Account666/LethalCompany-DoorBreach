@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.2.1
+
+\# Updated Readme<br>
+
 ## 1.2.0
 
 \+ Added [Moonswept](https://thunderstore.io/c/lethal-company/p/MoonsweptTeam/Moonswept/) support<br>
