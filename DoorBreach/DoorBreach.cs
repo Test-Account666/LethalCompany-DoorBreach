@@ -28,6 +28,7 @@ using HarmonyLib;
 using DoorBreach.Dependencies;
 using DoorBreach.Patches;
 using DoorBreach.Patches.DoorBreach;
+using DoorBreach.Patches.DoorBreach.Mods.Moonswept;
 using DoorBreach.Patches.DoorBreach.Mods.PiggyVariety;
 using DoorBreach.Patches.DoorBreach.Mods.ToilHead;
 using UnityEngine;
@@ -38,6 +39,7 @@ namespace DoorBreach;
 
 [BepInDependency("com.github.zehsteam.ToilHead", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("Piggy.PiggyVarietyMod", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("MoonsweptTeam.Moonswept", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class DoorBreach : BaseUnityPlugin {
@@ -67,6 +69,8 @@ public class DoorBreach : BaseUnityPlugin {
         }
 
         if (DependencyChecker.IsToilHeadInstalled()) Harmony.PatchAll(typeof(ToilHeadTurretPatch));
+
+        if (DependencyChecker.IsMoonsweptInstalled()) Harmony.PatchAll(typeof(MobileTurretPatch));
 
         Logger.LogDebug("Finished patching!");
     }

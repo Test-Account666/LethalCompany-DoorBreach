@@ -26,6 +26,7 @@ public static class ActionSource {
     public enum Source {
         UNKNOWN = -666,
         MALFUNCTION = -665,
+        MOBILE_TURRET = -6,
         TOIL_HEAD = -5,
         LANDMINE = -4,
         TURRET = -3,
@@ -38,6 +39,7 @@ public static class ActionSource {
 
     [Flags]
     public enum SelectableSource {
+        MOBILE_TURRET = -6,
         TOIL_HEAD = -5,
         LANDMINE = -4,
         TURRET = -3,
@@ -47,7 +49,7 @@ public static class ActionSource {
         [Tooltip("Player is actually anything above -1, but this is an enum, so...")]
         PLAYER = 0,
 
-        ALL = TOIL_HEAD | LANDMINE | TURRET | SHOTGUN_ACCIDENT | SHOTGUN_ENEMY | PLAYER,
+        ALL = MOBILE_TURRET | TOIL_HEAD | LANDMINE | TURRET | SHOTGUN_ACCIDENT | SHOTGUN_ENEMY | PLAYER,
     }
 
     public static Source? FromInt(this int source) {

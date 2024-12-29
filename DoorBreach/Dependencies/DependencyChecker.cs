@@ -12,4 +12,7 @@ internal static class DependencyChecker {
 
     internal static bool IsToilHeadInstalled() =>
         Chainloader.PluginInfos.Values.Any(metadata => metadata.Metadata.GUID.Contains("com.github.zehsteam.ToilHead"));
+    
+    internal static bool IsMoonsweptInstalled() =>
+        Chainloader.PluginInfos.Values.Any(metadata => metadata.Metadata.GUID.Contains("MoonsweptTeam.Moonswept"));
 }
