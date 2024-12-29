@@ -14,6 +14,7 @@ Currently Supported Mods:
 
 - [PiggysVarietyMod](https://thunderstore.io/c/lethal-company/p/Piggy/Piggys_Variety_Mod/)
 - [ToilHead](https://thunderstore.io/c/lethal-company/p/Zehs/ToilHead/)
+- [Moonswept](https://thunderstore.io/c/lethal-company/p/MoonsweptTeam/Moonswept/)
 
 <details>
 
