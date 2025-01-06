@@ -22,6 +22,7 @@ using com.github.zehsteam.ToilHead.MonoBehaviours;
 using DoorBreach.Functional;
 using HarmonyLib;
 using UnityEngine;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach.Mods.ToilHead;
 
@@ -56,6 +57,6 @@ public class ToilHeadTurretPatch {
 
         var adjustedDamage = (int) (baseDamage / logFactor);
 
-        doorHealth.HitDoorServerRpc(ActionSource.Source.TOIL_HEAD.ToInt(), adjustedDamage);
+        Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, ActionSource.Source.TOIL_HEAD.ToInt(), adjustedDamage);
     }
 }

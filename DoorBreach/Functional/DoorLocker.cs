@@ -25,23 +25,17 @@ public class DoorLocker : NetworkBehaviour {
 
     private void Awake() => _doorLock = GetComponent<DoorLock>();
 
-    [ServerRpc(RequireOwnership = false)]
-    public void LockDoorServerRpc() {
-        LockDoorClientRpc();
+    public override void OnDestroy() => DoorNetworkManager.DoorLockerCache.Remove(_doorLock.NetworkObject);
+
+    public void LockDoorServer() => DoorBreach.DoorNetworkManager.LockDoorClientRpc(_doorLock.NetworkObject);
+
+    public void SetDoorOpenServer(int playerWhoTriggered, bool open) {
+        DoorBreach.DoorNetworkManager.SetDoorOpenClientRpc(_doorLock.NetworkObject, playerWhoTriggered, open);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SetDoorOpenServerRpc(int playerWhoTriggered, bool open) {
-        SetDoorOpenClientRpc(playerWhoTriggered, open);
-    }
+    public void LockDoorClient() => _doorLock.LockDoor();
 
-    [ClientRpc]
-    private void LockDoorClientRpc() {
-        _doorLock.LockDoor();
-    }
-
-    [ClientRpc]
-    private void SetDoorOpenClientRpc(int playerWhoTriggered, bool open) {
+    public void SetDoorOpenClient(int playerWhoTriggered, bool open) {
         var component = _doorLock.gameObject.GetComponent<AnimatedObjectTrigger>();
 
         component.boolValue = open;

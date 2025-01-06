@@ -22,6 +22,7 @@ using HarmonyLib;
 using PiggyVarietyMod.Patches;
 using UnityEngine;
 using Math = System.Math;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach.Mods.PiggyVariety;
 
@@ -56,6 +57,6 @@ public static class RiflePatch {
 
         var adjustedDamage = (int) (baseDamage / logFactor);
 
-        doorHealth.HitDoorServerRpc(playerWhoShot, adjustedDamage);
+        Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, playerWhoShot, adjustedDamage);
     }
 }

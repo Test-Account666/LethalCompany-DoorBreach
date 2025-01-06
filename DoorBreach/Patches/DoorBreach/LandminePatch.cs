@@ -21,6 +21,7 @@ using System;
 using DoorBreach.Functional;
 using HarmonyLib;
 using UnityEngine;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach;
 
@@ -59,7 +60,7 @@ public class LandminePatch {
                 adjustedDamage = (int) (baseDamage / logFactor);
             }
 
-            doorHealth.HitDoorServerRpc(ActionSource.Source.LANDMINE.ToInt(), adjustedDamage);
+            Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, ActionSource.Source.LANDMINE.ToInt(), adjustedDamage);
         }
     }
 }

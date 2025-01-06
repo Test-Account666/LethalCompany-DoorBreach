@@ -19,8 +19,10 @@
 
 using DoorBreach.Functional;
 using HarmonyLib;
+using Unity.Netcode;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach;
 
@@ -30,11 +32,12 @@ public static class MeleeWeaponPatch {
     [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
     private static void HitDoor(Shovel __instance, bool cancel) {
+        Plugin.Logger.LogDebug($"Hit door {__instance} Cancel? {cancel}");
         if (cancel) return;
 
         var audioSource = __instance.shovelAudio;
 
-        audioSource.clip = global::DoorBreach.DoorBreach.doorHitShovelSfx;
+        audioSource.clip = Plugin.doorHitShovelSfx;
 
         HitDoor(__instance, __instance.shovelHitForce, 1.5f, 0.8f, -0.35f, audioSource);
     }
@@ -47,7 +50,7 @@ public static class MeleeWeaponPatch {
 
         var audioSource = __instance.knifeAudio;
 
-        audioSource.clip = global::DoorBreach.DoorBreach.doorHitKnifeSfx;
+        audioSource.clip = Plugin.doorHitKnifeSfx;
 
         HitDoor(__instance, __instance.knifeHitForce, 0.75f, 0.3F, 0.1f, audioSource);
     }
@@ -56,20 +59,25 @@ public static class MeleeWeaponPatch {
                                 AudioSource? hitSoundSource = null) {
         if (!grabbableObject.isHeld) return;
 
+        Plugin.Logger.LogFatal("Is held!");
+
         var playerHeldBy = grabbableObject.playerHeldBy;
 
         var gameplayCameraTransform = playerHeldBy?.gameplayCamera?.transform;
 
         if (gameplayCameraTransform is null) return;
 
+        Plugin.Logger.LogFatal("Camera transform not null!");
+
         var results = new RaycastHit[12];
 
         var size = Physics.SphereCastNonAlloc(gameplayCameraTransform.position + gameplayCameraTransform.right * rightMultiplier, radius,
-                                              gameplayCameraTransform.forward, results, maxDistance,
-                                              1 << 9 | StartOfRound.Instance.collidersAndRoomMaskAndDefault,
+                                              gameplayCameraTransform.forward, results, maxDistance, 1 << 9 | StartOfRound.Instance.collidersAndRoomMaskAndDefault,
                                               QueryTriggerInteraction.Collide);
 
         var playedSound = hitSoundSource == null;
+
+        Plugin.Logger.LogFatal($"Hit? {size}");
 
         for (var index = 0; index < size; index++) {
             var result = results[index];
@@ -77,6 +85,8 @@ public static class MeleeWeaponPatch {
             var hasHealth = result.collider.TryGetComponent(out DoorHealth doorHealth);
 
             if (!hasHealth) continue;
+
+            Plugin.Logger.LogFatal("Found door!");
 
             if (!doorHealth.IsBroken() && !doorHealth.IsDoorOpen()) {
                 if (!playedSound && hitSoundSource is not null) {
@@ -86,7 +96,7 @@ public static class MeleeWeaponPatch {
             }
 
             Debug.Assert(playerHeldBy != null, nameof(playerHeldBy) + " != null");
-            doorHealth.HitDoorServerRpc((int) playerHeldBy.playerClientId, damage);
+            Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, (int) playerHeldBy.playerClientId, damage);
         }
     }
 }
