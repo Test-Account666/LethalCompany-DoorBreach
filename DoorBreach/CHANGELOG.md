@@ -1,5 +1,10 @@
 # DoorBreach
 
+## 1.3.0
+
+\# Re-done networking<br>
+\+ Added `Open` DoorBreach mode<br>
+
 ## 1.2.1
 
 \# Updated Readme<br>

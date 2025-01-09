@@ -22,6 +22,7 @@ using DoorBreach.Functional;
 using HarmonyLib;
 using UnityEngine;
 using Random = System.Random;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach;
 
@@ -41,8 +42,7 @@ public static class ShotgunPatch {
 
         var ray = new Ray(shotgunPosition, shotgunForward);
 
-        var hitDoor = Physics.Raycast(ray, out var doorLock, 8f, 1 << 9,
-                                      QueryTriggerInteraction.Collide);
+        var hitDoor = Physics.Raycast(ray, out var doorLock, 8f, 1 << 9, QueryTriggerInteraction.Collide);
 
 
         if (!hitDoor) return;
@@ -65,6 +65,6 @@ public static class ShotgunPatch {
             adjustedDamage = (int) (baseDamage / logFactor);
         }
 
-        doorHealth.HitDoorServerRpc(playerWhoShot, adjustedDamage);
+        Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, playerWhoShot, adjustedDamage);
     }
 }

@@ -19,8 +19,10 @@
 
 using DoorBreach.Functional;
 using HarmonyLib;
+using Unity.Netcode;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach;
 
@@ -30,11 +32,12 @@ public static class MeleeWeaponPatch {
     [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
     private static void HitDoor(Shovel __instance, bool cancel) {
+        Plugin.Logger.LogDebug($"Hit door {__instance} Cancel? {cancel}");
         if (cancel) return;
 
         var audioSource = __instance.shovelAudio;
 
-        audioSource.clip = global::DoorBreach.DoorBreach.doorHitShovelSfx;
+        audioSource.clip = Plugin.doorHitShovelSfx;
 
         HitDoor(__instance, __instance.shovelHitForce, 1.5f, 0.8f, -0.35f, audioSource);
     }
@@ -47,7 +50,7 @@ public static class MeleeWeaponPatch {
 
         var audioSource = __instance.knifeAudio;
 
-        audioSource.clip = global::DoorBreach.DoorBreach.doorHitKnifeSfx;
+        audioSource.clip = Plugin.doorHitKnifeSfx;
 
         HitDoor(__instance, __instance.knifeHitForce, 0.75f, 0.3F, 0.1f, audioSource);
     }
@@ -65,8 +68,7 @@ public static class MeleeWeaponPatch {
         var results = new RaycastHit[12];
 
         var size = Physics.SphereCastNonAlloc(gameplayCameraTransform.position + gameplayCameraTransform.right * rightMultiplier, radius,
-                                              gameplayCameraTransform.forward, results, maxDistance,
-                                              1 << 9 | StartOfRound.Instance.collidersAndRoomMaskAndDefault,
+                                              gameplayCameraTransform.forward, results, maxDistance, 1 << 9 | StartOfRound.Instance.collidersAndRoomMaskAndDefault,
                                               QueryTriggerInteraction.Collide);
 
         var playedSound = hitSoundSource == null;
@@ -86,7 +88,7 @@ public static class MeleeWeaponPatch {
             }
 
             Debug.Assert(playerHeldBy != null, nameof(playerHeldBy) + " != null");
-            doorHealth.HitDoorServerRpc((int) playerHeldBy.playerClientId, damage);
+            Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, (int) playerHeldBy.playerClientId, damage);
         }
     }
 }

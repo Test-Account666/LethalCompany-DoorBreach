@@ -23,6 +23,7 @@ using HarmonyLib;
 using PiggyVarietyMod.Patches;
 using UnityEngine;
 using Random = System.Random;
+using Plugin = global::DoorBreach.DoorBreach;
 
 namespace DoorBreach.Patches.DoorBreach.Mods.PiggyVariety;
 
@@ -42,8 +43,7 @@ public static class RevolverPatch {
 
         var ray = new Ray(revolverPosition, revolverForward);
 
-        var hitDoor = Physics.Raycast(ray, out var doorLock, 8f, 1 << 9,
-                                      QueryTriggerInteraction.Collide);
+        var hitDoor = Physics.Raycast(ray, out var doorLock, 8f, 1 << 9, QueryTriggerInteraction.Collide);
 
 
         if (!hitDoor) return;
@@ -66,6 +66,6 @@ public static class RevolverPatch {
             adjustedDamage = (int) (baseDamage / logFactor);
         }
 
-        doorHealth.HitDoorServerRpc(playerWhoShot, adjustedDamage);
+        Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, playerWhoShot, adjustedDamage);
     }
 }

@@ -36,6 +36,7 @@ public static class DoorBreachConfig {
     public enum DoorBreachMode {
         DESTROY,
         UNUSABLE,
+        OPEN,
     }
 
     public static void InitializeConfig(ConfigFile configFile) {
@@ -46,13 +47,13 @@ public static class DoorBreachConfig {
                                        + " Destroy will destroy the door and unusable will make it unusable (This may cause bugs)").Value;
 
         minimumDoorHealth = configFile.Bind("Door Breach", "3. Minimum Door Health", 8,
-                                            new ConfigDescription("The minimum health a door has",
-                                                                  new AcceptableValueRange<int>(1, 16))).Value;
+                                            new ConfigDescription("The minimum health a door has", new AcceptableValueRange<int>(1, 16))).Value;
 
         possibleAdditionalHealth = configFile.Bind("Door Breach", "4. Possible Additional Door Health", 16,
-                                                   new ConfigDescription("This value defines how much additional health a door can have "
-                                                                       + "(On default values, this means a door's health can be between 8 and 24)",
-                                                                         new AcceptableValueRange<int>(0, 16))).Value;
+                                                   new ConfigDescription(
+                                                       "This value defines how much additional health a door can have "
+                                                     + "(On default values, this means a door's health can be between 8 and 24)",
+                                                       new AcceptableValueRange<int>(0, 16))).Value;
 
         var selectableSources = configFile.Bind("Door Breach", "5. Allowed Door Breach Sources", ActionSource.SelectableSource.ALL,
                                                 "Defines what can breach doors").Value;

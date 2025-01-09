@@ -19,18 +19,18 @@
 
 using System.Collections;
 using GameNetcodeStuff;
-using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace DoorBreach.Functional;
 
-public class DoorHealth : NetworkBehaviour {
+public class DoorHealth : MonoBehaviour {
     private bool _broken;
     private bool _hittable = true;
-    private DoorLock _doorLock = null!;
     private DoorLocker _doorLocker = null!;
     private int _health = 8;
+
+    public DoorLock DoorLock { get; private set; } = null!;
 
     private void Awake() {
         var minimumHealth = DoorBreachConfig.minimumDoorHealth;
@@ -39,34 +39,28 @@ public class DoorHealth : NetworkBehaviour {
         _health = Random.RandomRangeInt(minimumHealth, maximumHealth + 1);
     }
 
+    private void OnDestroy() => DoorNetworkManager.DoorHealthCache.Remove(DoorLock.NetworkObject);
+
     public bool IsBroken() => _broken;
-    public bool IsDoorOpen() => _doorLock.isDoorOpened;
+    public bool IsDoorOpen() => DoorLock.isDoorOpened;
 
     private void Update() {
         if (!_broken) return;
 
-        if (_doorLock.isDoorOpened) return;
+        if (DoorLock.isDoorOpened) return;
 
-        _doorLocker.SetDoorOpenServerRpc(ActionSource.Source.UNKNOWN.ToInt(), true);
+        _doorLocker.SetDoorOpenServer(ActionSource.Source.UNKNOWN.ToInt(), true);
     }
 
-    public override void OnNetworkSpawn() {
-        base.OnNetworkSpawn();
+    private void Start() => DoorBreach.DoorNetworkManager.RequestHealthServerRpc(DoorLock.NetworkObject);
 
-        RequestHealthServerRpc();
-    }
+    public void RequestHealthServer() => DoorBreach.DoorNetworkManager.SetHealthClientRpc(DoorLock.NetworkObject, _health);
 
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestHealthServerRpc() {
-        SetHealthClientRpc(_health);
-    }
-
-    internal void SetDoorLock(DoorLock doorLock) => _doorLock = doorLock;
+    internal void SetDoorLock(DoorLock doorLock) => DoorLock = doorLock;
 
     internal void SetDoorLocker(DoorLocker doorLocker) => _doorLocker = doorLocker;
 
-    [ServerRpc(RequireOwnership = false)]
-    public void HitDoorServerRpc(int playerWhoHit, int damage) {
+    public void HitDoorServer(int playerWhoHit, int damage) {
         if (damage == 0) return;
 
         var actionSource = playerWhoHit.FromInt();
@@ -90,11 +84,11 @@ public class DoorHealth : NetworkBehaviour {
 
         if (_broken) return;
 
-        SetHealthClientRpc(_health - damage);
+        DoorBreach.DoorNetworkManager.SetHealthClientRpc(DoorLock.NetworkObject, _health - damage);
 
         if (_health > 0) return;
 
-        BreakDoorClientRpc(playerWhoHit);
+        DoorBreach.DoorNetworkManager.BreakDoorClientRpc(DoorLock.NetworkObject, playerWhoHit);
     }
 
     private IEnumerator ResetHittable() {
@@ -102,11 +96,9 @@ public class DoorHealth : NetworkBehaviour {
         _hittable = true;
     }
 
-    [ClientRpc]
-    public void SetHealthClientRpc(int health) => _health = health;
+    public void SetHealthClient(int health) => _health = health;
 
-    [ClientRpc]
-    public void BreakDoorClientRpc(int playerWhoTriggered) {
+    public void BreakDoorClient(int playerWhoTriggered) {
         PlayAudio(gameObject);
 
         var actionSource = playerWhoTriggered.FromInt();
@@ -117,27 +109,33 @@ public class DoorHealth : NetworkBehaviour {
 
         if (actionSource == ActionSource.Source.PLAYER) player = StartOfRound.Instance.allPlayerScripts[playerWhoTriggered];
 
-        EventHandler.OnDoorBreach(actionSource.Value, _doorLock, player, DoorBreachConfig.doorBreachMode);
+        EventHandler.OnDoorBreach(actionSource.Value, DoorLock, player, DoorBreachConfig.doorBreachMode);
 
         _broken = true;
 
         if (DoorBreachConfig.doorBreachMode == DoorBreachConfig.DoorBreachMode.DESTROY) {
-            var doorLockTransform = _doorLock.transform;
+            var doorLockTransform = DoorLock.transform;
             Landmine.SpawnExplosion(doorLockTransform.position, true);
             Destroy(doorLockTransform.parent.gameObject);
             return;
         }
 
-        _doorLocker.SetDoorOpenServerRpc(playerWhoTriggered, true);
+        _doorLocker.SetDoorOpenServer(playerWhoTriggered, true);
 
-        _doorLock.doorTrigger.interactable = false;
-        _doorLock.doorTrigger.enabled = false;
+        if (DoorBreachConfig.doorBreachMode == DoorBreachConfig.DoorBreachMode.OPEN) {
+            _broken = false;
+            _health = 1;
+            return;
+        }
 
-        _doorLock.doorTrigger.holdTip = "";
-        _doorLock.doorTrigger.disabledHoverTip = "";
+        DoorLock.doorTrigger.interactable = false;
+        DoorLock.doorTrigger.enabled = false;
 
-        _doorLock.doorTrigger.hoverIcon = null;
-        _doorLock.doorTrigger.disabledHoverIcon = null;
+        DoorLock.doorTrigger.holdTip = "";
+        DoorLock.doorTrigger.disabledHoverTip = "";
+
+        DoorLock.doorTrigger.hoverIcon = null;
+        DoorLock.doorTrigger.disabledHoverIcon = null;
     }
 
     public int GetHealth() => _health;

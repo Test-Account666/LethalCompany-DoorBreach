@@ -31,9 +31,12 @@ using DoorBreach.Patches.DoorBreach;
 using DoorBreach.Patches.DoorBreach.Mods.Moonswept;
 using DoorBreach.Patches.DoorBreach.Mods.PiggyVariety;
 using DoorBreach.Patches.DoorBreach.Mods.ToilHead;
+using DoorBreach.Patches.Networking;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Networking;
 using Debug = System.Diagnostics.Debug;
+using Object = UnityEngine.Object;
 
 namespace DoorBreach;
 
@@ -51,10 +54,16 @@ public class DoorBreach : BaseUnityPlugin {
     internal static AudioClip? doorHitShovelSfx;
     internal static AudioClip? doorBreakSfx;
 
+    internal static DoorNetworkManager DoorNetworkManager { get; set; } = null!;
+
+    private static GameObject _doorNetworkManagerPrefab = null!;
+
     internal static void Patch() {
         Harmony ??= new(MyPluginInfo.PLUGIN_GUID);
 
         Logger.LogDebug("Patching...");
+
+        Harmony.PatchAll(typeof(GameNetworkManagerPatch));
 
         Harmony.PatchAll(typeof(DoorLockPatch));
 
@@ -162,5 +171,19 @@ public class DoorBreach : BaseUnityPlugin {
         clip.name = name;
 
         return clip;
+    }
+
+    public static GameObject GetNetworkManagerPrefab() {
+        if (_doorNetworkManagerPrefab) return _doorNetworkManagerPrefab;
+
+        _doorNetworkManagerPrefab = new("DoorBreachNetworkManager", typeof(NetworkObject), typeof(DoorNetworkManager));
+
+        var networkObject = _doorNetworkManagerPrefab.GetComponent<NetworkObject>();
+        networkObject.NetworkObjectId = 6665004;
+
+        _doorNetworkManagerPrefab.hideFlags = HideFlags.HideAndDontSave;
+        DontDestroyOnLoad(_doorNetworkManagerPrefab);
+
+        return _doorNetworkManagerPrefab;
     }
 }
