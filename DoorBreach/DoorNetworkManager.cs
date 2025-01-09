@@ -31,8 +31,6 @@ public class DoorNetworkManager : NetworkBehaviour {
         base.OnNetworkSpawn();
 
         DoorBreach.DoorNetworkManager = this;
-
-        DoorBreach.Logger.LogFatal("Network Spawned!");
     }
 
     public override void OnNetworkDespawn() {
@@ -41,20 +39,14 @@ public class DoorNetworkManager : NetworkBehaviour {
         DoorBreach.DoorNetworkManager = null!;
         DoorHealthCache.Clear();
         DoorLockerCache.Clear();
-
-        DoorBreach.Logger.LogFatal("Network Despawned!");
     }
 
     #region DoorHealth
 
     [ServerRpc(RequireOwnership = false)]
     public void HitDoorServerRpc(NetworkObjectReference doorHit, int playerWhoHit, int damage) {
-        DoorBreach.Logger.LogFatal($"Calling HitDoorServerRpc! {doorHit}");
-
         var hasDoorHealth = TryGetDoorHealth(doorHit, out var doorHealth);
         if (!hasDoorHealth) return;
-
-        DoorBreach.Logger.LogFatal("Found door health!");
 
         doorHealth.HitDoorServer(playerWhoHit, damage);
     }

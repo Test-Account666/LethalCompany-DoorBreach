@@ -33,19 +33,12 @@ public static class GameNetworkManagerPatch {
     [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
     public static void SpawnNetworkManager(GameNetworkManager __instance) {
-        Plugin.Logger.LogFatal("GameNetworkManager.SetLobbyJoinable!");
-
-        if (!__instance.isHostingGame) {
-            Plugin.Logger.LogFatal("We're not the host!");
-            return;
-        }
+        if (!__instance.isHostingGame) return;
 
         if (Plugin.DoorNetworkManager && Plugin.DoorNetworkManager.NetworkObject) {
-            Plugin.Logger.LogFatal("Network manager already exists! Destroying...");
+            Plugin.Logger.LogDebug("Network manager already exists! Destroying...");
             Plugin.DoorNetworkManager.NetworkObject.Despawn();
         }
-
-        Plugin.Logger.LogFatal("Spawning network manager!");
 
         var networkManagerObject = Object.Instantiate(Plugin.GetNetworkManagerPrefab());
 

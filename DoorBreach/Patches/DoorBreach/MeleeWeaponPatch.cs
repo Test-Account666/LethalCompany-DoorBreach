@@ -59,15 +59,11 @@ public static class MeleeWeaponPatch {
                                 AudioSource? hitSoundSource = null) {
         if (!grabbableObject.isHeld) return;
 
-        Plugin.Logger.LogFatal("Is held!");
-
         var playerHeldBy = grabbableObject.playerHeldBy;
 
         var gameplayCameraTransform = playerHeldBy?.gameplayCamera?.transform;
 
         if (gameplayCameraTransform is null) return;
-
-        Plugin.Logger.LogFatal("Camera transform not null!");
 
         var results = new RaycastHit[12];
 
@@ -77,16 +73,12 @@ public static class MeleeWeaponPatch {
 
         var playedSound = hitSoundSource == null;
 
-        Plugin.Logger.LogFatal($"Hit? {size}");
-
         for (var index = 0; index < size; index++) {
             var result = results[index];
 
             var hasHealth = result.collider.TryGetComponent(out DoorHealth doorHealth);
 
             if (!hasHealth) continue;
-
-            Plugin.Logger.LogFatal("Found door!");
 
             if (!doorHealth.IsBroken() && !doorHealth.IsDoorOpen()) {
                 if (!playedSound && hitSoundSource is not null) {
