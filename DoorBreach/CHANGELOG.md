@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.4.0
+
+\* (Probably) fixed networking by using an AssetBundle to load networking prefab
+
 ## 1.3.1
 
 \* Fixed issues with PiggysVaietyMod? (Just updated the binary, and now it works?)
