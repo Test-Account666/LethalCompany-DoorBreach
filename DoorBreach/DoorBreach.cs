@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using BepInEx;
 using BepInEx.Logging;
@@ -57,6 +58,8 @@ public class DoorBreach : BaseUnityPlugin {
     internal static DoorNetworkManager DoorNetworkManager { get; set; } = null!;
 
     private static GameObject _doorNetworkManagerPrefab = null!;
+
+    private static AssetBundle _doorNetworkManagerBundle = null!;
 
     internal static void Patch() {
         Harmony ??= new(MyPluginInfo.PLUGIN_GUID);
@@ -176,14 +179,33 @@ public class DoorBreach : BaseUnityPlugin {
     public static GameObject GetNetworkManagerPrefab() {
         if (_doorNetworkManagerPrefab) return _doorNetworkManagerPrefab;
 
-        _doorNetworkManagerPrefab = new("DoorBreachNetworkManager", typeof(NetworkObject), typeof(DoorNetworkManager));
+        if (!_doorNetworkManagerBundle && !LoadBundle(Assembly.GetExecutingAssembly(), "doorbreach")) return null!;
 
-        var networkObject = _doorNetworkManagerPrefab.GetComponent<NetworkObject>();
-        networkObject.NetworkObjectId = 6665004;
-
-        _doorNetworkManagerPrefab.hideFlags = HideFlags.HideAndDontSave;
-        DontDestroyOnLoad(_doorNetworkManagerPrefab);
+        _doorNetworkManagerPrefab = _doorNetworkManagerBundle.LoadAsset<GameObject>("Assets/LethalCompany/Mods/plugins/DoorBreach/PrefabNetworkManager.prefab");
 
         return _doorNetworkManagerPrefab;
+    }
+
+    public static bool LoadBundle(Assembly assembly, string assetBundleName) {
+        var assemblyLocation = Path.GetDirectoryName(assembly.Location);
+        if (assemblyLocation == null) {
+            Logger.LogError($"Failed to determine assembly '{assembly.FullName}' location.");
+            return false;
+        }
+
+        var assetBundlePath = Path.Combine(assemblyLocation, assetBundleName);
+        if (!File.Exists(assetBundlePath)) {
+            Logger.LogFatal(new StringBuilder($"Asset bundle '{assetBundleName}' not found at {assetBundlePath}.").Append(" ")
+                                .Append("Check if the asset bundle is in the same directory as the plugin.").ToString());
+            return false;
+        }
+
+        try {
+            _doorNetworkManagerBundle = AssetBundle.LoadFromFile(assetBundlePath);
+            return true;
+        } catch (Exception ex) {
+            Logger.LogError($"Failed to load asset bundle '{assetBundleName}' for assembly {assembly.FullName}: {ex.Message}");
+            return false;
+        }
     }
 }

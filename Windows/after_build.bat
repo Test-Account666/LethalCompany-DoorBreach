@@ -26,6 +26,7 @@ copy "DoorSfx\DoorBreak.wav" "BuildOutput\DoorSfx"
 copy "DoorSfx\DoorHitKnife.wav" "BuildOutput\DoorSfx"
 copy "DoorSfx\DoorHitShovel.wav" "BuildOutput\DoorSfx"
 copy "LICENSE" "BuildOutput\"
+copy "AssetBundle\doorbreach" "BuildOutput\"
 
 :: Generate manifest and zip file
 call powershell.exe -ExecutionPolicy Bypass -File generate_manifest.ps1
