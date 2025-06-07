@@ -36,7 +36,7 @@ public static class ShotgunPatch {
     private static void ShootDoor(ShotgunItem __instance, Vector3 shotgunPosition, Vector3 shotgunForward) {
         var playerWhoShot = ActionSource.Source.SHOTGUN_ACCIDENT.ToInt();
 
-        if (__instance.isHeld) playerWhoShot = (int) __instance.playerHeldBy.playerClientId;
+        if (__instance.isHeld) playerWhoShot = ActionSource.Source.PLAYER.ToInt() + (int) __instance.playerHeldBy.playerClientId;
 
         if (__instance.isHeldByEnemy) playerWhoShot = ActionSource.Source.SHOTGUN_ENEMY.ToInt();
 

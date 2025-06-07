@@ -24,36 +24,36 @@ namespace DoorBreach;
 
 public static class ActionSource {
     public enum Source {
-        UNKNOWN = -666,
-        MALFUNCTION = -665,
-        MOBILE_TURRET = -6,
-        TOIL_HEAD = -5,
-        LANDMINE = -4,
-        TURRET = -3,
-        SHOTGUN_ACCIDENT = -2,
-        SHOTGUN_ENEMY = -1,
+        UNKNOWN = 1 << 31,
+        MALFUNCTION = 1 << 30,
+        MOBILE_TURRET = 1 << 6,
+        TOIL_HEAD = 1 << 5,
+        LANDMINE = 1 << 4,
+        TURRET = 1 << 3,
+        SHOTGUN_ACCIDENT = 1 << 2,
+        SHOTGUN_ENEMY = 1 << 1,
 
-        [Tooltip("Player is actually anything above -1, but this is an enum, so...")]
-        PLAYER = 0,
+        [Tooltip("Player is actually anything above 12, but this is an enum, so...")]
+        PLAYER = 1 << 12,
     }
 
     [Flags]
     public enum SelectableSource {
-        MOBILE_TURRET = -6,
-        TOIL_HEAD = -5,
-        LANDMINE = -4,
-        TURRET = -3,
-        SHOTGUN_ACCIDENT = -2,
-        SHOTGUN_ENEMY = -1,
+        MOBILE_TURRET = 1 << 6,
+        TOIL_HEAD = 1 << 5,
+        LANDMINE = 1 << 4,
+        TURRET = 1 << 3,
+        SHOTGUN_ACCIDENT = 1 << 2,
+        SHOTGUN_ENEMY = 1 << 1,
 
-        [Tooltip("Player is actually anything above -1, but this is an enum, so...")]
-        PLAYER = 0,
+        [Tooltip("Player is actually anything above 12, but this is an enum, so...")]
+        PLAYER = 1 << 12,
 
         ALL = MOBILE_TURRET | TOIL_HEAD | LANDMINE | TURRET | SHOTGUN_ACCIDENT | SHOTGUN_ENEMY | PLAYER,
     }
 
     public static Source? FromInt(this int source) {
-        if (source >= 0) return Source.PLAYER;
+        if (source >= Source.PLAYER.ToInt()) return Source.PLAYER;
 
         return (Source) source;
     }

@@ -88,7 +88,9 @@ public static class MeleeWeaponPatch {
             }
 
             Debug.Assert(playerHeldBy != null, nameof(playerHeldBy) + " != null");
-            Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, (int) playerHeldBy.playerClientId, damage);
+
+            Plugin.DoorNetworkManager.HitDoorServerRpc(doorHealth.DoorLock.NetworkObject, ActionSource.Source.PLAYER.ToInt() + (int) playerHeldBy.playerClientId,
+                                                       damage);
         }
     }
 }
