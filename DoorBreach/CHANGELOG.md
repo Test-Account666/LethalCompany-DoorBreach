@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.4.1
+
+\* Fixed issues with config<br>
+
 ## 1.4.0
 
 \* (Probably) fixed networking by using an AssetBundle to load networking prefab
