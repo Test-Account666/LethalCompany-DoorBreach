@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.4.2
+
+\* Fixed IndexOutOfRange Exception<br>
+
 ## 1.4.1
 
 \* Fixed issues with config<br>
