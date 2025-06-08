@@ -107,7 +107,7 @@ public class DoorHealth : MonoBehaviour {
 
         PlayerControllerB? player = null;
 
-        if (actionSource == ActionSource.Source.PLAYER) player = StartOfRound.Instance.allPlayerScripts[playerWhoTriggered];
+        if (actionSource == ActionSource.Source.PLAYER) player = StartOfRound.Instance.allPlayerScripts[playerWhoTriggered - ActionSource.Source.PLAYER.ToInt()];
 
         EventHandler.OnDoorBreach(actionSource.Value, DoorLock, player, DoorBreachConfig.doorBreachMode);
 
