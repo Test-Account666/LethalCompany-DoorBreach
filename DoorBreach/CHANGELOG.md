@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.4.3
+
+\* Fixed twin doors not being recognized<br>
+
 ## 1.4.2
 
 \* Fixed IndexOutOfRange Exception<br>
