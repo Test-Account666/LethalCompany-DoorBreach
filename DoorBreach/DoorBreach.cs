@@ -33,11 +33,9 @@ using DoorBreach.Patches.DoorBreach.Mods.Moonswept;
 using DoorBreach.Patches.DoorBreach.Mods.PiggyVariety;
 using DoorBreach.Patches.DoorBreach.Mods.ToilHead;
 using DoorBreach.Patches.Networking;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Networking;
 using Debug = System.Diagnostics.Debug;
-using Object = UnityEngine.Object;
 
 namespace DoorBreach;
 

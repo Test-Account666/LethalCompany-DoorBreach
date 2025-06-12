@@ -44,7 +44,10 @@ public class LandminePatch {
 
             var hasHealth = collider.TryGetComponent(out DoorHealth doorHealth);
 
-            if (!hasHealth) continue;
+            if (!hasHealth) {
+                doorHealth = collider.transform.parent.parent.GetComponentInChildren<DoorHealth>();
+                if (!doorHealth) continue;
+            }
 
             var distance = Vector3.Distance(position, collider.transform.position);
 

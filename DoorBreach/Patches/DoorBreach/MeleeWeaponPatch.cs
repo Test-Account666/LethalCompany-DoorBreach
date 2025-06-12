@@ -78,7 +78,10 @@ public static class MeleeWeaponPatch {
 
             var hasHealth = result.collider.TryGetComponent(out DoorHealth doorHealth);
 
-            if (!hasHealth) continue;
+            if (!hasHealth) {
+                doorHealth = result.collider.transform.parent.parent.GetComponentInChildren<DoorHealth>();
+                if (!doorHealth) continue;
+            }
 
             if (!doorHealth.IsBroken() && !doorHealth.IsDoorOpen()) {
                 if (!playedSound && hitSoundSource is not null) {

@@ -49,7 +49,10 @@ public static class ShotgunPatch {
 
         var hasHealth = doorLock.collider.TryGetComponent(out DoorHealth doorHealth);
 
-        if (!hasHealth) return;
+        if (!hasHealth) {
+            doorHealth = doorLock.collider.transform.parent.parent.GetComponentInChildren<DoorHealth>();
+            if (!doorHealth) return;
+        }
 
         var distance = doorLock.distance;
 
