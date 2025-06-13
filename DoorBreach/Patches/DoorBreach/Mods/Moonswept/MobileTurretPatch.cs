@@ -44,7 +44,15 @@ public class MobileTurretPatch {
         var hasHealth = doorLock.collider.TryGetComponent(out DoorHealth doorHealth);
 
         if (!hasHealth) {
-            doorHealth = doorLock.collider.transform.parent.parent.GetComponentInChildren<DoorHealth>();
+            var parent = doorLock.collider.transform.parent;
+
+            if (!parent) return;
+
+            var parentParent = parent.parent;
+
+            if (!parentParent) return;
+
+            doorHealth = parentParent.GetComponentInChildren<DoorHealth>();
             if (!doorHealth) return;
         }
 

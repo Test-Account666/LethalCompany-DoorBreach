@@ -45,7 +45,15 @@ public class LandminePatch {
             var hasHealth = collider.TryGetComponent(out DoorHealth doorHealth);
 
             if (!hasHealth) {
-                doorHealth = collider.transform.parent.parent.GetComponentInChildren<DoorHealth>();
+                var parent = collider.transform.parent;
+
+                if (!parent) continue;
+
+                var parentParent = parent.parent;
+
+                if (!parentParent) continue;
+
+                doorHealth = parentParent.GetComponentInChildren<DoorHealth>();
                 if (!doorHealth) continue;
             }
 

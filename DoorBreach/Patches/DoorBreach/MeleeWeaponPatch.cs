@@ -79,7 +79,15 @@ public static class MeleeWeaponPatch {
             var hasHealth = result.collider.TryGetComponent(out DoorHealth doorHealth);
 
             if (!hasHealth) {
-                doorHealth = result.collider.transform.parent.parent.GetComponentInChildren<DoorHealth>();
+                var parent = result.collider.transform.parent;
+
+                if (!parent) continue;
+
+                var parentParent = parent.parent;
+
+                if (!parentParent) continue;
+
+                doorHealth = parentParent.GetComponentInChildren<DoorHealth>();
                 if (!doorHealth) continue;
             }
 
