@@ -1,5 +1,9 @@
 # DoorBreach
 
+## 1.4.4
+
+\* Fixed parent NullReferenceException<br>
+
 ## 1.4.3
 
 \* Fixed twin doors not being recognized<br>
