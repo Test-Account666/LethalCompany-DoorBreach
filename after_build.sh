@@ -9,4 +9,4 @@ cp -f LICENSE BuildOutput/ &&
 cp -f AssetBundle/doorbreach BuildOutput/ &&
 ./generate_manifest.sh &&
 ./generate_zipfile.sh &&
-dolphin "./BuildOutput"
+xdg-open "./BuildOutput"
